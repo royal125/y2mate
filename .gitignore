@@ -160,3 +160,21 @@ dist
 .yarn/install-state.gz
 .pnp.*
 >>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
+
+# Auto-committer ignored files
+*.tmp
+*.temp
+*.cache
+*.dll
+*.exe
+*.env
+.vscode/**
+.idea/**
+.vs/**
+node_modules/**
+.git/**
+dist/**
+build/**
+*.swp
+*.swo
+Thumbs.db
