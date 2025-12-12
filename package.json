@@ -1,11 +1,16 @@
 {
+<<<<<<< HEAD
   "name": "ytube_new",
   "homepage": ".",
+=======
+  "name": "ytube",
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+<<<<<<< HEAD
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
     "axios": "^1.13.2",
@@ -24,6 +29,38 @@
   "scripts": {
     "start": "react-scripts start",
     "build:obfuscated": "npm run build && node obfuscate.js",
+=======
+    "@lottiefiles/dotlottie-react": "^0.17.3",
+    "@mui/icons-material": "^7.3.2",
+    "@mui/material": "^7.3.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ffmpeg-static": "^5.2.0",
+    "lottie-react": "^2.4.1",
+    "nodemon": "^3.1.10",
+    "react": "^19.1.1",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.1.1",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.9.3",
+    "react-scripts": "^5.0.1",
+    "react-spinners": "^0.17.0",
+    "react-spinners-css": "^1.2.2",
+    "web-vitals": "^2.1.4",
+    "yt-dlp-exec": "^1.0.2"
+  },
+
+  "proxy": "http://localhost:5000",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -46,7 +83,15 @@
     ]
   },
   "devDependencies": {
+<<<<<<< HEAD
     "javascript-obfuscator": "^5.0.1",
     "webpack-obfuscator": "^3.6.0"
+=======
+    "html-webpack-plugin": "^5.6.4",
+    "install": "^0.13.0",
+    "npm": "^11.6.1",
+    "webpack": "^5.101.3",
+    "webpack-dev-server": "^5.2.2"
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
   }
 }

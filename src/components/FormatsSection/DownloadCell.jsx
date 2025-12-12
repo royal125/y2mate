@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { Button, Box, LinearProgress, Typography } from "@mui/material";
 
@@ -49,11 +50,44 @@ const DownloadCell = ({ format, downloadingMap, progressMap, handleDownload }) =
             backgroundColor: "#26a589ff !important",
             "&:hover": { backgroundColor: "#1d7c69ff !important" },
           }}
+=======
+// DownloadCell.jsx
+import React from 'react';
+import { Button, Box } from '@mui/material';
+import Lottie from 'lottie-react';
+import spinnerAnim from '../assets/spinner.json';
+
+const DownloadCell = ({ format, downloadingMap, handleDownload }) => {
+  return (
+    <>
+      {downloadingMap[format.format_id] ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: "40px" }}
+        >
+          <Lottie
+            animationData={spinnerAnim}
+            loop
+            autoplay
+            style={{ height: 40, width: 40 }}
+          />
+        </Box>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={() => handleDownload(format)}
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
         >
           Download
         </Button>
       )}
+<<<<<<< HEAD
     </Box>
+=======
+    </>
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
   );
 };
 

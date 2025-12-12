@@ -7,13 +7,20 @@ const FormatsSection = ({ videoData }) => {
   const [downloadingMap, setDownloadingMap] = useState({});
 
   if (!videoData || !videoData.formats) return null;
+<<<<<<< HEAD
 const API_BASE = process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
+=======
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
 
   const handleDownload = async (format) => {
     setDownloadingMap((prev) => ({ ...prev, [format.format_id]: true }));
 
     try {
+<<<<<<< HEAD
       const res = await fetch(`${API_BASE}/download`, {
+=======
+      const res = await fetch("https://savefrom.in/api/download", {
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: videoData.url, format_id: format.format_id }),

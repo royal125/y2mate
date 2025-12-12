@@ -184,7 +184,11 @@ const CarouselSection = () => {
         </div>
       </div>
 
+<<<<<<< HEAD
       <style>{`
+=======
+      <style jsx>{`
+>>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
         .custom-carousel {
           border-radius: 20px;
           overflow: hidden;
