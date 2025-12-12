@@ -1,0 +1,52 @@
+{
+  "name": "ytube_new",
+  "homepage": ".",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.5",
+    "@mui/material": "^7.3.5",
+    "axios": "^1.13.2",
+    "bootstrap": "^5.3.8",
+    "framer-motion": "^12.23.25",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.555.0",
+    "react": "18.3.1",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "18.3.1",
+    "react-router-dom": "^7.9.6",
+    "react-scripts": "^0.0.0",
+    "web-vitals": "^2.1.4"
+  },
+  "proxy": "http://localhost:5000",
+  "scripts": {
+    "start": "react-scripts start",
+    "build:obfuscated": "npm run build && node obfuscate.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^5.0.1",
+    "webpack-obfuscator": "^3.6.0"
+  }
+}

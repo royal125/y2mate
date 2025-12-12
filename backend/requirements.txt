@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+ytube-api
+requests
+python-multipart
+pydantic
+aiohttp
+ffmpeg-python
