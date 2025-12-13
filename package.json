@@ -39,7 +39,7 @@
   },
   "proxy": "http://localhost:5000",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start && npm run dev",
     "build": "react-scripts build",
     "obfuscate": "node obfuscate.js",
     "build:obfuscate": "react-scripts build && node obfuscate.js",
