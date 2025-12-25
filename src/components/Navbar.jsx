@@ -1,38 +1,44 @@
 import React from "react";
 import logo from "../components/assets/logo.png";
 import { AppBar, Toolbar, Tabs, Tab, Typography, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-function Navbar({ currentTab, setCurrentTab }) {
+function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleChange = (event, newValue) => {
-    setCurrentTab(newValue);
+  // ✅ Map routes to tab index
+  const getTabFromPath = (path) => {
+    if (path === "/") return 0;
+    if (path.startsWith("/Mp3Page")) return 1;
+    if (path.startsWith("/instagram")) return 2;
+    if (path.startsWith("/facebook")) return 3;
+    if (path.startsWith("/about")) return 4;
+    return 0;
+  };
 
+  const currentTab = getTabFromPath(location.pathname);
+
+  const handleChange = (_, newValue) => {
     switch (newValue) {
       case 0:
-        navigate("/"); // YouTube page
+        navigate("/");
         break;
       case 1:
-        navigate("/Mp3Page"); // MP3 Converter page
+        navigate("/Mp3Page");
         break;
       case 2:
-        navigate("/instagram"); // Instagram
+        navigate("/instagram");
         break;
       case 3:
-        navigate("/facebook"); // Facebook
+        navigate("/facebook");
         break;
       case 4:
-        navigate("/about"); // About
+        navigate("/about");
         break;
       default:
         navigate("/");
     }
-  };
-
-  const handleLogoClick = () => {
-    navigate("/");
-    setCurrentTab(0);
   };
 
   return (
@@ -44,6 +50,7 @@ function Navbar({ currentTab, setCurrentTab }) {
       }}
     >
       <Toolbar>
+        {/* LOGO */}
         <Box
           sx={{
             display: "flex",
@@ -51,7 +58,7 @@ function Navbar({ currentTab, setCurrentTab }) {
             flexGrow: 1,
             cursor: "pointer",
           }}
-          onClick={handleLogoClick}
+          onClick={() => navigate("/")}
         >
           <img
             src={logo}
@@ -66,11 +73,15 @@ function Navbar({ currentTab, setCurrentTab }) {
             onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
             onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
           />
-          <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: 0.5 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", letterSpacing: 0.5 }}
+          >
             Video Downloader
           </Typography>
         </Box>
 
+        {/* NAV TABS */}
         <Tabs
           value={currentTab}
           onChange={handleChange}
@@ -80,6 +91,7 @@ function Navbar({ currentTab, setCurrentTab }) {
             "& .MuiTab-root": {
               fontWeight: "bold",
               textTransform: "capitalize",
+              minWidth: 110,
             },
             "& .MuiTab-root:hover": {
               color: "#93c5fd",
@@ -87,6 +99,7 @@ function Navbar({ currentTab, setCurrentTab }) {
             "& .MuiTabs-indicator": {
               height: "3px",
               borderRadius: "2px",
+              backgroundColor: "#ff1744", // 🔴 Red underline fixed
             },
           }}
         >

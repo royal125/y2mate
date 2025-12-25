@@ -12,7 +12,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_BASE =
+  process.env.REACT_APP_API_URL || "https://api.savefrom.in";
+
 
 export default function InstagramDownloader() {
   const [url, setUrl] = useState("");

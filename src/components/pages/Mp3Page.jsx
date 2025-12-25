@@ -13,11 +13,9 @@ import {
 import Lottie from "lottie-react";
 import waveformAnim from "../assets/waveform.json"; // 🎵 waveform animation
 
-<<<<<<< HEAD
-const API_BASE = process.env.REACT_APP_API_URL; // unified backend (no more 8001)
-=======
-const API_BASE = "https://savefrom.in/api"; // unified backend (no more 8001)
->>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
+const API_BASE =
+  process.env.REACT_APP_API_URL || "https://api.savefrom.in";
+
 
 const Mp3Page = () => {
   const [file, setFile] = useState(null);
@@ -229,8 +227,6 @@ const Mp3Page = () => {
         </Box>
 
         {/* Convert Button */}
-<<<<<<< HEAD
-                {/* Convert Button */}
         {!downloadLink && (
           <Button
             variant="contained"
@@ -250,26 +246,6 @@ const Mp3Page = () => {
             {loading ? "Converting..." : "Convert to MP3"}
           </Button>
         )}
-
-=======
-        <Button
-          variant="contained"
-          onClick={handleConvert}
-          disabled={loading}
-          sx={{
-            borderRadius: "30px",
-            px: 4,
-            py: 1.5,
-            backgroundColor: "#00ffcc",
-            color: "#000",
-            fontWeight: "bold",
-            textTransform: "none",
-            "&:hover": { backgroundColor: "#00e6b8" },
-          }}
-        >
-          {loading ? "Converting..." : "Convert to MP3"}
-        </Button>
->>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
 
         {/* Loader and waveform */}
         {loading && (
@@ -305,44 +281,23 @@ const Mp3Page = () => {
         {/* Download */}
         {downloadLink && (
           <Box mt={4}>
-<<<<<<< HEAD
-          <Button
-  href={downloadLink}
-  variant="contained"
-  disableElevation
-  sx={{
-    backgroundColor: "#e31467ff !important", // base color
-    color: "white !important",
-    px: 4,
-    py: 1.5,
-    borderRadius: "25px",
-    fontWeight: "bold",
-    transition: "background-color 0.3s ease",
-    "&:hover": {
-      backgroundColor: "#1d7c69ff !important", // darker hover
-    },
-  }}
->
-  ⬇️ Download MP3
-</Button>
-
-
-=======
             <Button
               href={downloadLink}
               variant="contained"
+              disableElevation
               sx={{
-                backgroundColor: "#00b894",
+                backgroundColor: "#e31467ff",
+                color: "white",
+                borderRadius: "30px",
                 px: 4,
                 py: 1.5,
-                borderRadius: "25px",
                 fontWeight: "bold",
-                "&:hover": { backgroundColor: "#019875" },
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#c01050" },
               }}
             >
               ⬇️ Download MP3
             </Button>
->>>>>>> 0035b5a58621603643ba2ef4cd93b52418e875c0
           </Box>
         )}
       </Paper>
@@ -350,4 +305,4 @@ const Mp3Page = () => {
   );
 };
 
-export default Mp3Page;
+export default Mp3Page; 

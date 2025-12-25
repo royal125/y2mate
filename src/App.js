@@ -38,7 +38,8 @@ function App() {
 
   try {
     // ✅ Send the URL in JSON body, not as params
-    const API_BASE = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+   const API_BASE =
+  process.env.REACT_APP_API_URL || "https://api.savefrom.in";
     const res = await axios.post(`${API_BASE}/info`, { url });
 
     if (res.data && res.data.formats) {
