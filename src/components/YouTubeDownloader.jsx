@@ -28,7 +28,7 @@ import FeaturesSection from "../components/FeaturesSection";
 import CarouselSection from "../components/CarouselSection";
 import FAQSection from "../components/FAQSection";
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'https://api.savefrom.in';
+const API_BASE = process.env.REACT_APP_API_BASE;
 console.log('API_BASE:', API_BASE);
 
 
@@ -58,52 +58,41 @@ export default function YouTubeDownloader() {
     
 
   /* ===================== FETCH INFO ===================== */
-  const handleFetch = async () => {
+  const handleFetchInfo = async () => {
+  try {
+    setError("");
+    setVideoData(null);
+
     if (!url || !url.trim()) {
-      setError("Please enter a valid YouTube URL");
+      setError("Please enter a YouTube URL");
       return;
     }
 
-    setLoading(true);
-    setVideoData(null);
-    setError("");
+    const cleanUrl = url.trim();
 
-    try {
-      const cleanUrl = url.trim();
-      console.log("Sending URL:", cleanUrl);
-
-      const res = await axios.post(
-        `${API_BASE}/api/info`,
-        { url: cleanUrl },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          timeout: 30000
-        }
-      );
-
-      if (res.data && res.data.formats) {
-        setVideoData(res.data);
-      } else {
-        setError(res.data?.error || "Failed to fetch video info");
+    const res = await axios.post(
+      `${API_BASE}/api/info`,
+      { url: cleanUrl },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 60000,
       }
+    );
 
-    } catch (err) {
-      console.error('API Error:', err);
-      if (err.response) {
-        setError(`Server error: ${err.response.status} - ${err.response.data?.error || 'Unknown error'}`);
-      } else if (err.request) {
-        setError("Cannot connect to server. Check if backend is running.");
-      } else {
-        setError("Request failed: " + err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    // 🔴 NO success check
+    // 🔴 NO extra conditions
+    setVideoData(res.data);
 
+  } catch (err) {
+    console.error(err);
+    setError(
+      err.response?.data?.error ||
+      "Failed to fetch video info"
+    );
+  }
+};
   /* ===================== DOWNLOAD ===================== */
  const startDownload = (format) => {
   if (showBar) return;
@@ -209,7 +198,7 @@ export default function YouTubeDownloader() {
           <Button
             variant="contained"
             type="button"
-            onClick={handleFetch}
+            onClick={handleFetchInfo}
             disabled={loading}
             className="yt-fetch"
           >
