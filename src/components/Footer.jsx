@@ -23,19 +23,19 @@ const Footer = () => (
       </Box>
 
       <Box className="footer-social">
-        <a href="#" aria-label="Instagram" className="social insta">
+        <a href="/instagram" aria-label="Instagram" className="social insta">
           <FaInstagram />
         </a>
-        <a href="#" aria-label="Facebook" className="social fb">
+        <a href="/facebook" aria-label="Facebook" className="social fb">
           <FaFacebookF />
         </a>
-        <a href="#" aria-label="YouTube" className="social yt">
+        <a href="/" aria-label="YouTube" className="social yt">
           <FaYoutube />
         </a>
-        <a href="#" aria-label="X" className="social x">
+        <a href="/" aria-label="X" className="social x">
           <FaXTwitter />
         </a>
-        <a href="#" aria-label="TikTok" className="social tt">
+        <a href="/" aria-label="TikTok" className="social tt">
           <FaTiktok />
         </a>
       </Box>

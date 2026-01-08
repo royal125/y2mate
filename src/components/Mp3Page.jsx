@@ -10,7 +10,6 @@ import {
   Slider,
   Switch,
   FormControlLabel,
-  TextField,
 } from "@mui/material";
 import Lottie from "lottie-react";
 import waveformAnim from "./assets/waveform.json"; // 🎵 waveform animation
@@ -20,18 +19,11 @@ import waveformAnim from "./assets/waveform.json"; // 🎵 waveform animation
 const API_BASE =
   process.env.REACT_APP_API_BASE || "http://localhost:5000";
 
-const generateId = () =>
-  window.crypto?.randomUUID?.() ||
-  Math.random().toString(36).slice(2);
-
 const Mp3Page = () => {
   /* ===== COMMON ===== */
   const [progress, setProgress] = useState(0);
   const [showBar, setShowBar] = useState(false);
   const [label, setLabel] = useState("");
-
-  /* ===== YOUTUBE ===== */
-  const [url, setUrl] = useState("");
 
   /* ===== UPLOAD ===== */
   const [file, setFile] = useState(null);
@@ -60,44 +52,6 @@ const Mp3Page = () => {
       size: (f.size / (1024 * 1024)).toFixed(2) + " MB",
       type: f.type,
     });
-  };
-
-  const startYoutubeMp3 = () => {
-    if (!url.trim()) {
-      alert("Paste YouTube URL");
-      return;
-    }
-
-    const id = generateId();
-
-    setShowBar(true);
-    setProgress(0);
-    setLabel("Converting YouTube to MP3…");
-
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 300);
-
-    const evtSource = new EventSource(
-      `${API_BASE}/api/progress/${id}`
-    );
-
-    evtSource.onmessage = (e) => {
-      const p = Math.floor(Number(e.data));
-      setProgress(p);
-      if (p >= 100) evtSource.close();
-    };
-
-    const safeTitle = "youtube_audio";
-
-    window.location.href =
-      `${API_BASE}/api/mp3` +
-      `?url=${encodeURIComponent(url)}` +
-      `&title=${safeTitle}` +
-      `&id=${id}`;
   };
 
   const startUploadMp3 = async () => {

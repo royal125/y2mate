@@ -11,7 +11,6 @@ import YouTubeDownloader from "./components/YouTubeDownloader";
 import InstagramDownloader from "./components/InstagramDownloader";
 import Mp3Page from "./components/Mp3Page";
 import FacebookPage from "./components/pages/FacebookPage";
-import MaintenancePage from "./components/pages/MaintenancePage";
 import About from "./components/About";
 import Privacy from "./components/Privacy";
 import getTheme from "./components/theme";
