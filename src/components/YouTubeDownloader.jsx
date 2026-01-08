@@ -74,11 +74,7 @@ export default function YouTubeDownloader() {
 
       const res = await axios.post(
         `${API_BASE}/api/info`,
-        { 
-          url: cleanUrl,
-          link: cleanUrl,
-          video_url: cleanUrl 
-        },
+        { url: cleanUrl },
         {
           headers: {
             'Content-Type': 'application/json',
