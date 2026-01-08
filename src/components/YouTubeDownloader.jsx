@@ -32,10 +32,6 @@ const API_BASE = process.env.REACT_APP_API_BASE;
 console.log('API_BASE:', API_BASE);
 
 
-const generateId = () =>
-  window.crypto?.randomUUID?.() ||
-  Math.random().toString(36).slice(2);
-
 export default function YouTubeDownloader() {
   const [url, setUrl] = useState("");
   const [videoData, setVideoData] = useState(null);
