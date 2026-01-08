@@ -29,8 +29,8 @@ import FeaturesSection from "../components/FeaturesSection";
 import CarouselSection from "../components/CarouselSection";
 import FAQSection from "../components/FAQSection";
 
-const API_BASE =
-  process.env.REACT_APP_API_BASE || "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 
 const generateId = () =>
   window.crypto?.randomUUID?.() ||
