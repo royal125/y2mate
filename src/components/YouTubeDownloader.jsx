@@ -95,76 +95,78 @@ export default function YouTubeDownloader() {
     }
   };
   /* ===================== DOWNLOAD ===================== */
- const startDownload = (format) => {
+ const startDownload = async (format) => {
   if (showBar) return;
 
-  const downloadId = generateId();
+  const id = crypto.randomUUID();
 
   setShowBar(true);
   setLabel("Starting download…");
   setProgress(0);
 
-  const evtSource = new EventSource(
-    `${API_BASE}/api/progress/${downloadId}`
-  );
+  try {
+    await axios.post(`${API_BASE}/api/download/start`, {
+      url,
+      itag: format.itag,
+      title: videoData.title,
+      id,
+    });
 
-  evtSource.onmessage = (e) => {
-    const value = Math.floor(Number(e.data));
-    setProgress(value);
-    setLabel("Downloading…");
+    const evtSource = new EventSource(
+      `${API_BASE}/api/progress/${id}`
+    );
 
-    if (value >= 100) {
-      evtSource.close();
-    }
-  };
+    evtSource.onmessage = (e) => {
+      const value = Number(e.data);
+      setProgress(value);
+      setLabel("Downloading…");
 
-  const safeTitle = videoData.title
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "_")
-    .substring(0, 50);
-
-  window.location.href =
-    `${API_BASE}/api/download` +
-    `?url=${encodeURIComponent(url)}` +
-    `&itag=${format.itag}` +
-    `&title=${encodeURIComponent(safeTitle)}` +
-    `&id=${downloadId}`;
+      if (value >= 100) {
+        evtSource.close();
+        window.location.href = `${API_BASE}/api/download/file/${id}`;
+      }
+    };
+  } catch (err) {
+    setError("Download failed to start");
+    setShowBar(false);
+  }
 };
 
-    const downloadAudio = () => {
+    const downloadAudio = async () => {
   if (showBar || !videoData) return;
 
-  const downloadId = generateId();
+  const id = crypto.randomUUID();
 
   setShowBar(true);
   setLabel("Starting audio download…");
   setProgress(0);
 
-  const evtSource = new EventSource(
-    `${API_BASE}/api/progress/${downloadId}`
-  );
+  try {
+    await axios.post(`${API_BASE}/api/download/start`, {
+      url,
+      itag: "bestaudio",
+      title: videoData.title,
+      id,
+    });
 
-  evtSource.onmessage = (e) => {
-    const value = Math.floor(Number(e.data));
-    setProgress(value);
-    setLabel("Downloading audio…");
+    const evtSource = new EventSource(
+      `${API_BASE}/api/progress/${id}`
+    );
 
-    if (value >= 100) {
-      evtSource.close();
-    }
-  };
+    evtSource.onmessage = (e) => {
+      const value = Number(e.data);
+      setProgress(value);
+      setLabel("Downloading audio…");
 
-  const safeTitle = videoData.title
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "_")
-    .substring(0, 50);
-
-  window.location.href =
-    `${API_BASE}/api/download` +
-    `?url=${encodeURIComponent(url)}` +
-    `&itag=bestaudio` +
-    `&title=${encodeURIComponent(safeTitle)}` +
-    `&id=${downloadId}`;
+      if (value >= 100) {
+        evtSource.close();
+        window.location.href = `${API_BASE}/api/download/file/${id}`;
+      }
+    };
+  } catch (err) {
+    setError("Audio download failed to start");
+    setShowBar(false);
+  }
 };
 
 
