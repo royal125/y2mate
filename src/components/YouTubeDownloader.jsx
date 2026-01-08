@@ -28,7 +28,8 @@ import FeaturesSection from "../components/FeaturesSection";
 import CarouselSection from "../components/CarouselSection";
 import FAQSection from "../components/FAQSection";
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = process.env.REACT_APP_API_BASE || 'https://api.savefrom.in';
+console.log('API_BASE:', API_BASE);
 
 
 const generateId = () =>
@@ -73,7 +74,18 @@ export default function YouTubeDownloader() {
 
       const res = await axios.post(
         `${API_BASE}/api/info`,
-        { url: cleanUrl }
+        { 
+          url: cleanUrl,
+          link: cleanUrl,
+          video_url: cleanUrl 
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          timeout: 30000
+        }
       );
 
       if (res.data && res.data.formats) {
@@ -83,7 +95,14 @@ export default function YouTubeDownloader() {
       }
 
     } catch (err) {
-      setError("Backend not reachable");
+      console.error('API Error:', err);
+      if (err.response) {
+        setError(`Server error: ${err.response.status} - ${err.response.data?.error || 'Unknown error'}`);
+      } else if (err.request) {
+        setError("Cannot connect to server. Check if backend is running.");
+      } else {
+        setError("Request failed: " + err.message);
+      }
     } finally {
       setLoading(false);
     }
