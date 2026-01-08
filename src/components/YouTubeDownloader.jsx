@@ -68,11 +68,13 @@ export default function YouTubeDownloader() {
     try {
       const res = await axios.post(`${API_BASE}/api/info`, { url });
 
-      if (res.data?.success) {
-        setVideoData(res.data);
-      } else {
-        setError("Failed to fetch video info");
-      }
+      if (res.data && res.data.formats) {
+  setVideoData(res.data);
+} else {
+  setError(res.data?.error || "Failed to fetch video info");
+
+}
+
     } catch (err) {
       setError("Backend not reachable");
     } finally {
