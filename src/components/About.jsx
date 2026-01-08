@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Box, Typography, Button, Grid, Card, CardContent } from "@mui/material";
 import { motion } from "framer-motion";
-import { Download, Leaf, Zap, Globe, Users, Heart } from "lucide-react";
+import { Users, Leaf, Zap, Globe } from "lucide-react";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
