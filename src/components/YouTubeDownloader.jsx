@@ -6,7 +6,6 @@ import {
   Paper,
   Tabs,
   Tab,
-  TextField,
   Typography,
   Table,
   TableBody,
@@ -59,21 +58,29 @@ export default function YouTubeDownloader() {
 
   /* ===================== FETCH INFO ===================== */
   const handleFetch = async () => {
-    if (!url.trim()) return;
+    if (!url || !url.trim()) {
+      setError("Please enter a valid YouTube URL");
+      return;
+    }
 
     setLoading(true);
     setVideoData(null);
     setError("");
 
     try {
-      const res = await axios.post(`${API_BASE}/api/info`, { url });
+      const cleanUrl = url.trim();
+      console.log("Sending URL:", cleanUrl);
+
+      const res = await axios.post(
+        `${API_BASE}/api/info`,
+        { url: cleanUrl }
+      );
 
       if (res.data && res.data.formats) {
-  setVideoData(res.data);
-} else {
-  setError(res.data?.error || "Failed to fetch video info");
-
-}
+        setVideoData(res.data);
+      } else {
+        setError(res.data?.error || "Failed to fetch video info");
+      }
 
     } catch (err) {
       setError("Backend not reachable");
@@ -167,11 +174,19 @@ export default function YouTubeDownloader() {
           device with smart quality detection.
         </Typography>
         <Box className="yt-input-row">
-          <TextField
-            fullWidth
-            placeholder="Paste YouTube URL"
+          <input
+            type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            placeholder="Paste YouTube URL"
+            style={{
+              flex: 1,
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "none",
+              fontSize: "1rem",
+              outline: "none"
+            }}
           />
           <Box className="yt-orb">
             <YouTube />
