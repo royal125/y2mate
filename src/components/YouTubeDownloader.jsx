@@ -119,7 +119,9 @@ export default function YouTubeDownloader() {
 
       if (value >= 100) {
         evtSource.close();
-        window.location.href = `${API_BASE}/api/download/file/${id}`;
+        setTimeout(() => {
+          window.location.href = `${API_BASE}/api/download/file/${id}`;
+        }, 1000);
       }
     };
   } catch (err) {
@@ -156,7 +158,9 @@ export default function YouTubeDownloader() {
 
       if (value >= 100) {
         evtSource.close();
-        window.location.href = `${API_BASE}/api/download/file/${id}`;
+        setTimeout(() => {
+          window.location.href = `${API_BASE}/api/download/file/${id}`;
+        }, 1000);
       }
     };
   } catch (err) {
