@@ -59,40 +59,41 @@ export default function YouTubeDownloader() {
 
   /* ===================== FETCH INFO ===================== */
   const handleFetchInfo = async () => {
-  try {
-    setError("");
-    setVideoData(null);
+    setLoading(true);
+    try {
+      setError("");
+      setVideoData(null);
 
-    if (!url || !url.trim()) {
-      setError("Please enter a YouTube URL");
-      return;
-    }
-
-    const cleanUrl = url.trim();
-
-    const res = await axios.post(
-      `${API_BASE}/api/info`,
-      { url: cleanUrl },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: 60000,
+      if (!url || !url.trim()) {
+        setError("Please enter a YouTube URL");
+        return;
       }
-    );
 
-    // 🔴 NO success check
-    // 🔴 NO extra conditions
-    setVideoData(res.data);
+      const cleanUrl = url.trim();
 
-  } catch (err) {
-    console.error(err);
-    setError(
-      err.response?.data?.error ||
-      "Failed to fetch video info"
-    );
-  }
-};
+      const res = await axios.post(
+        `${API_BASE}/api/info`,
+        { url: cleanUrl },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 60000,
+        }
+      );
+
+      setVideoData(res.data);
+
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.error ||
+        "Failed to fetch video info"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   /* ===================== DOWNLOAD ===================== */
  const startDownload = (format) => {
   if (showBar) return;
