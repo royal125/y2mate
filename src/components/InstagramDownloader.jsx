@@ -11,9 +11,12 @@ import {
   CardContent,
 } from "@mui/material";
 import axios from "axios";
+import Lottie from "lottie-react";
+import instagramLoader from "./pages/Instagram.json";
 
 const API_BASE =
-  process.env.REACT_APP_API_URL || "https://api.savefrom.in";
+    (process.env.REACT_APP_API_BASE || "http://localhost:5000").replace(/\/$/, "");
+console.log("API_BASE:", API_BASE);
 
 
 export default function InstagramDownloader() {
@@ -21,8 +24,9 @@ export default function InstagramDownloader() {
   const [info, setInfo] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [downloading, setDownloading] = useState(false);
 
-  // Fetch video info from backend
   const fetchInfo = async () => {
     if (!url.trim()) return;
 
@@ -33,7 +37,11 @@ export default function InstagramDownloader() {
     try {
       const res = await axios.post(`${API_BASE}/instagram/info`, { url });
       if (res.data.success) {
-        setInfo(res.data);
+        setInfo({
+          title: res.data.title || "Instagram Reel",
+          thumbnail: res.data.thumbnail || "",
+          formats: res.data.formats || [{ itag: "best", quality: "Best Quality" }],
+        });
       } else {
         setError(res.data.error || "Failed to fetch video");
       }
@@ -45,192 +53,189 @@ export default function InstagramDownloader() {
     }
   };
 
-  // Download handler - like YouTube
- // Download handler - like YouTube
-const handleDownload = (format) => {
-  const downloadUrl = `${API_BASE}/instagram/download?url=${encodeURIComponent(url)}&itag=${format.itag}&title=${encodeURIComponent(info.title)}`;
-  window.location.href = downloadUrl;
-};
+  const handleDownload = (format) => {
+    const id = crypto.randomUUID();
+    setProgress(0);
+    setDownloading(true);
+
+    const evtSource = new EventSource(`${API_BASE}/api/progress/${id}`);
+
+    evtSource.onmessage = (e) => {
+      const value = Number(e.data);
+      setProgress(value);
+
+      if (value >= 100) {
+        evtSource.close();
+      }
+    };
+
+    const link = document.createElement("a");
+    link.href =
+      `${API_BASE}/instagram/download` +
+      `?url=${encodeURIComponent(url)}` +
+      `&title=${encodeURIComponent(info.title)}` +
+      `&itag=${encodeURIComponent(format?.itag || "best")}` +
+      `&id=${id}`;
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => setDownloading(false), 2000);
+  };
+
+  const displayFormats = React.useMemo(() => {
+    if (!info?.formats?.length) return [];
+
+    const sorted = [...info.formats].sort((a, b) => {
+      const ha = a.height || Number(String(a.quality || "").replace("p", "")) || 0;
+      const hb = b.height || Number(String(b.quality || "").replace("p", "")) || 0;
+      return hb - ha;
+    });
+
+    const labelFor = (height) => {
+      if (height >= 1080) return "Full HD";
+      if (height >= 720) return "HD quality";
+      if (height >= 480) return "Medium quality";
+      return "Low quality";
+    };
+
+    const seen = new Set();
+    const picks = [];
+
+    for (const f of sorted) {
+      const height =
+        f.height || Number(String(f.quality || "").replace("p", "")) || 0;
+      const label = height ? labelFor(height) : "Best Quality";
+      if (!seen.has(label)) {
+        seen.add(label);
+        picks.push({ ...f, label });
+      }
+      if (picks.length >= 4) break;
+    }
+
+    return picks;
+  }, [info]);
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        py: 5,
-        minHeight: "100vh",
-      }}
-    >
-      <Typography
-        variant="h4"
-        textAlign="center"
-        fontWeight="bold"
-        mb={4}
-        sx={{ letterSpacing: "0.5px" }}
-      >
-        📷 Instagram Reels Downloader
-      </Typography>
+    <Container maxWidth="md" className="page-wrap">
+      <Box className="ig-hero glass-panel">
+        <Box>
+          <Typography variant="h4" className="section-title ig-title">
+            Instagram Reels Downloader
+          </Typography>
+          <Typography className="ig-subtitle">
+            Grab reels in full quality with a single link. Fast, clean, and no
+            sign-up required.
+          </Typography>
+          <Box className="ig-badges">
+            <span>HD Quality</span>
+            <span>No Watermark</span>
+            <span>Unlimited</span>
+          </Box>
+        </Box>
+        <Box className="ig-orb" />
+      </Box>
 
-      {/* Input Section */}
-      <Box
-        sx={{
-          p: 3,
-          borderRadius: 4,
-          background: "rgba(255, 255, 255, 0.6)",
-          backdropFilter: "blur(10px)",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          mb: 3,
-        }}
-      >
+      <Box className="glass-panel ig-form" sx={{ p: 3, mb: 3 }}>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
 
-        <TextField
-          fullWidth
-          label="Paste Instagram Reel URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && fetchInfo()}
-          placeholder="https://www.instagram.com/reel/..."
-        />
+        <Typography className="ig-form-title">
+          Paste your Instagram reel URL
+        </Typography>
 
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{ mt: 2, py: 1.2, fontSize: "1rem" }}
-          onClick={fetchInfo}
-          disabled={loading}
-        >
-          {loading ? <CircularProgress size={26} color="inherit" /> : "Fetch Video"}
-        </Button>
-      </Box>
-
-      {/* Video Section */}
-      {info && (
-        <Card
-          sx={{
-            mt: 4,
-            borderRadius: 4,
-            overflow: "hidden",
-            boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-          }}
-        >
-          <Box
+        <Box className="ig-input-row">
+          <TextField
+            fullWidth
+            placeholder="https://www.instagram.com/reel/..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && fetchInfo()}
             sx={{
-              position: "relative",
-              height: 200,
-              backgroundImage: `url(${info.thumbnail})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              filter: "blur(15px)",
+              "& .MuiOutlinedInput-input": {
+                color: "#000",
+              },
+              "& .MuiOutlinedInput-input::placeholder": {
+                color: "#000",
+                opacity: 1,
+              },
             }}
           />
-
-          {/* Thumbnail Section */}
-          <CardContent
-            sx={{
-              textAlign: "center",
-              mt: "-100px",
-            }}
+          <Button
+            variant="contained"
+            className="ig-primary"
+            onClick={fetchInfo}
+            disabled={loading}
           >
-            {info?.thumbnail ? (
-              <img
-                src={info.thumbnail}
-                alt="Thumbnail"
-                style={{
-                  width: "230px",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                }}
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "230px",
-                  height: "230px",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                  backgroundColor: "#e0e0e0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "18px",
-                  color: "#999",
-                  margin: "0 auto",
-                }}
-              >
-                📷 No thumbnail
-              </div>
-            )}
-          </CardContent>
+            {loading ? <CircularProgress size={22} color="inherit" /> : "Fetch"}
+          </Button>
+        </Box>
 
-          {/* Title */}
-          <Typography
-            variant="h6"
-            mt={2}
-            sx={{ fontWeight: 600, px: 3, textAlign: "center" }}
-          >
-            {info.title}
-          </Typography>
+        {loading && (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 3 }}>
+            <Lottie animationData={instagramLoader} style={{ width: 150, height: 150 }} loop />
+          </Box>
+        )}
+      </Box>
 
-          {/* Video Quality Buttons - SAME AS YOUTUBE */}
-          <Box sx={{ p: 3 }}>
-            <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: "600" }}>
-              📹 Video Quality
+      {info && (
+        <Card className="glass-panel ig-result">
+          <CardContent>
+            <Typography variant="h6" className="section-title" sx={{ mb: 2 }}>
+              Your reel is ready
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-              {info.formats && info.formats.length > 0 ? (
-                info.formats.map((f, i) => (
-                  <Button
-                    key={i}
-                    variant="contained"
-                    fullWidth
-                    sx={{
-                      py: 1.3,
-                      fontSize: "1rem",
-                      background: "#e91e63",
-                      "&:hover": { background: "#c2185b" },
-                    }}
-                    onClick={() => handleDownload(f)}
-                  >
-                    ⬇ Download {f.quality}
-                  </Button>
-                ))
-              ) : (
-                <Typography color="error">No formats available</Typography>
-              )}
+
+            {info.thumbnail && (
+              <Box className="ig-preview">
+                <img src={info.thumbnail} alt="Instagram thumbnail" />
+              </Box>
+            )}
+
+            <Box className="ig-actions">
+              {(displayFormats.length ? displayFormats : info.formats || []).slice(0, 4).map((f) => (
+                <Button
+                  key={`${f.itag}-${f.quality || f.label}`}
+                  variant="contained"
+                  className="ig-primary"
+                  onClick={() => handleDownload(f)}
+                >
+                  {f.label || f.quality || "Best Quality"}
+                </Button>
+              ))}
             </Box>
 
-            {/* Audio Download Button - LIKE YOUTUBE */}
-            {info.audioFormats && info.audioFormats.length > 0 && (
-              <>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ mt: 3, mb: 2, fontWeight: "600" }}
-                >
-                  🎵 Audio Only
+            {downloading && (
+              <Box sx={{ mt: 3 }}>
+                <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                  <CircularProgress variant="determinate" value={progress} size={60} />
+                </Box>
+                <Typography variant="body2" sx={{ textAlign: "center", mb: 1 }}>
+                  Downloading... {progress}%
                 </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
+                <Box
                   sx={{
-                    py: 1.3,
-                    fontSize: "1rem",
-                    background: "#3498db",
-                    "&:hover": { background: "#2980b9" },
+                    height: 8,
+                    borderRadius: 5,
+                    background: "rgba(255,255,255,0.15)",
+                    overflow: "hidden",
                   }}
-                  onClick={() => handleDownload(info.audioFormats[0])}
                 >
-                  🎵 Download Best Audio
-                </Button>
-              </>
+                  <Box
+                    sx={{
+                      height: "100%",
+                      width: `${progress}%`,
+                      background: "linear-gradient(90deg, #ff7a18, #ff4d2d)",
+                      transition: "width 0.3s",
+                    }}
+                  />
+                </Box>
+              </Box>
             )}
-          </Box>
+          </CardContent>
         </Card>
       )}
     </Container>
